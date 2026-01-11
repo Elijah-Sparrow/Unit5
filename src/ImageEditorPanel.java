@@ -124,6 +124,41 @@ public class ImageEditorPanel extends JPanel implements KeyListener{
         return changed;
     }
 
+    public Color[][] contrast(Color[][] orig){
+        Color[][] changed = new Color[orig.length][orig[0].length];
+        int pixels = 0;
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+        for (int r = 0; r < orig.length; r++) {
+            for (int c = 0; c < orig[0].length; c++){
+                red += orig[r][c].getBlue();
+                green += orig[r][c].getRed();
+                blue += orig[r][c].getGreen();
+                pixels++;
+            }
+        }
+        int averageRed = red/pixels;
+        int averageGreen = green/pixels;
+        int averageBlue = blue/pixels;
+        
+        for (int r = 0; r < orig.length; r++) {
+            for (int c = 0; c < orig[0].length; c++){
+                int realRed = orig[r][c].getRed();
+                int realGreen = orig[r][c].getGreen();
+                int realBlue = orig[r][c].getBlue();
+                if ((realRed < 250) && (realRed>averageRed)) realRed++;
+                if ((realGreen < 250) && (realGreen>averageGreen)) realGreen++;
+                if ((realBlue < 250) && (realBlue>averageBlue)) realBlue++;
+                if ((realRed>10)&&(realRed<averageRed)) realRed--;
+                if ((realGreen>10)&&(realGreen<averageGreen)) realGreen--;
+                if ((realBlue>10)&&(realBlue<averageBlue)) realBlue--;
+                changed[r][c] = new Color(realRed, realGreen, realBlue);
+            }
+        }
+        return changed;
+    }
+
     public Color[][] makeColorArray(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -163,6 +198,11 @@ public class ImageEditorPanel extends JPanel implements KeyListener{
 
         if (e.getKeyChar() == 't'){
             pixels = colorShift(pixels);
+            repaint();
+        }
+
+        if (e.getKeyChar() == 'y'){
+            pixels = contrast(pixels);
             repaint();
         }
 
