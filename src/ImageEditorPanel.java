@@ -39,10 +39,6 @@ public class ImageEditorPanel extends JPanel implements KeyListener{
     }
 
     public void run() {
-        // call your image-processing methods here OR call them from keyboard event
-        // handling methods
-        // write image-processing methods as pure functions - for example: pixels =
-        // flip(pixels);
         repaint();
     }
 
@@ -99,9 +95,8 @@ public class ImageEditorPanel extends JPanel implements KeyListener{
     public Color[][] greyscale(Color[][] orig){
         Color[][] changed = new Color[orig.length][orig[0].length];
         for (int r = 0; r < orig.length; r++) {
-            for (int c = 0; c < orig[0].length; c++){
-                Color grey = new Color(orig[r][c].getRed(),orig[r][c].getRed(),orig[r][c].getRed());
-                changed[r][c] = grey;
+            for (int c = 0; c < orig[0].length; c++){ 
+                changed[r][c] = new Color(orig[r][c].getRed(),orig[r][c].getRed(),orig[r][c].getRed());
             }
         }
         return changed;
@@ -147,12 +142,12 @@ public class ImageEditorPanel extends JPanel implements KeyListener{
                 int realRed = orig[r][c].getRed();
                 int realGreen = orig[r][c].getGreen();
                 int realBlue = orig[r][c].getBlue();
-                if ((realRed < 250) && (realRed>averageRed)) realRed++;
-                if ((realGreen < 250) && (realGreen>averageGreen)) realGreen++;
-                if ((realBlue < 250) && (realBlue>averageBlue)) realBlue++;
-                if ((realRed>10)&&(realRed<averageRed)) realRed--;
-                if ((realGreen>10)&&(realGreen<averageGreen)) realGreen--;
-                if ((realBlue>10)&&(realBlue<averageBlue)) realBlue--;
+                if ((realRed < 255) && (realRed>averageRed)) realRed++;
+                if ((realGreen < 255) && (realGreen>averageGreen)) realGreen++;
+                if ((realBlue < 255) && (realBlue>averageBlue)) realBlue++;
+                if ((realRed>1)&&(realRed<averageRed)) realRed--;
+                if ((realGreen>1)&&(realGreen<averageGreen)) realGreen--;
+                if ((realBlue>1)&&(realBlue<averageBlue)) realBlue--;
                 changed[r][c] = new Color(realRed, realGreen, realBlue);
             }
         }
@@ -170,40 +165,32 @@ public class ImageEditorPanel extends JPanel implements KeyListener{
                 result[row][col] = c;
             }
         }
-        // System.out.println("Loaded image: width: " +width + " height: " + height);
         return result;
     }
 
     public void keyTyped(KeyEvent e) {
-        // note the difference between getKeyChar and getKeyCode
         if (e.getKeyChar() == 'q'){
             pixels = hflip(pixels);
-            repaint();
         }
 
         if (e.getKeyChar() == 'w'){
             pixels = vflip(pixels);
-            repaint();
         }
 
         if (e.getKeyChar() == 'e'){
             pixels = blur(pixels, radius);
-            repaint();
         }
 
         if (e.getKeyChar() == 'r'){
             pixels = greyscale(pixels);
-            repaint();
         }
 
         if (e.getKeyChar() == 't'){
             pixels = colorShift(pixels);
-            repaint();
         }
 
         if (e.getKeyChar() == 'y'){
             pixels = contrast(pixels);
-            repaint();
         }
 
         if (e.getKeyChar() == '+'){
@@ -217,6 +204,8 @@ public class ImageEditorPanel extends JPanel implements KeyListener{
                 System.out.println("Blur radius minimum reached");
             }
         }
+
+        repaint();
     }
 
     
